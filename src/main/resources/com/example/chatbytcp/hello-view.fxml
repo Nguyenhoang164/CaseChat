@@ -10,7 +10,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.text.Font?>
 <AnchorPane fx:id="ap_main" prefHeight="396" prefWidth="478" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.chatbytcp.HelloController">
+            fx:controller="com.example.chatbytcp.HelloController" style="-fx-background-color: #7676ff">
     <children>
         <Button fx:id="button_send" layoutX="404" layoutY="338" text="Send"/>
         <TextField fx:id="tf_message" layoutX="40" layoutY="340" prefWidth="363" prefHeight="26" />
