@@ -6,6 +6,10 @@ import javafx.scene.text.FontSmoothingType;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Server {
 private ServerSocket serverSocket;
@@ -27,10 +31,12 @@ private BufferedWriter bufferedWriter;
     }
     public void sendMessageToClient(String messageFrom){
         try {
+            ImportToDatabase importToDatabase = new ImportToDatabase();
             bufferedWriter.write(messageFrom);
+            importToDatabase.AddToDatabase("Server :" + messageFrom);
             bufferedWriter.newLine();
             bufferedWriter.flush();
-        }catch (IOException e){
+        }catch (IOException | SQLException e){
             System.out.println(e.getMessage());
             CloseEveryThing(socket,bufferedWriter,bufferedReader);
         }
@@ -71,3 +77,33 @@ private BufferedWriter bufferedWriter;
     }
 
 }
+class ImportToDatabase {
+    private String localhost = "localhost:3306";
+    private String dbname = "DataMessage";
+    private String username = "root";
+    private String password = "Kamito@123";
+    private String URLConnect = "jdbc:mysql://" + localhost + "/" + dbname;
+
+    public Connection ConnectToDatabase() throws SQLException {
+        Connection connection = DriverManager.getConnection(URLConnect, username, password);
+        return connection;
+    }
+
+    public void AddToDatabase(String message) throws SQLException {
+        ImportToDatabase importToDatabase = new ImportToDatabase();
+        Connection connection = importToDatabase.ConnectToDatabase();
+        String result = message;
+        String query = "insert into Message(Message) values ('" + result + "')";
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
+    }
+
+    public void DeleteAll() throws SQLException {
+        ImportToDatabase importToDatabase = new ImportToDatabase();
+        Connection connection = importToDatabase.ConnectToDatabase();
+        String query = "TRUNCATE TABLE Message";
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
+    }
+}
+
